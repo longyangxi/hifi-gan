@@ -66,17 +66,8 @@ def mel_spectrogram(y, n_fft, num_mels, sampling_rate, hop_size, win_size, fmin,
                       center=center, pad_mode='reflect', normalized=False, onesided=True, return_complex=True)
 
     spec = torch.sqrt(spec.pow(2).sum(-1)+(1e-9))
-    
-     ##
-    spec = torch.view_as_real(spec)  # Convert the complex tensor to a real tensor
-    spec = torch.sqrt(spec.pow(2).sum(-1) + 1e-9)  # Compute the magnitude
-    spec = spec.unsqueeze(1)
-    spec = torch.matmul(spec, mel_basis[str(fmax)+'_'+str(y.device)].unsqueeze(0).transpose(1, 2))
-    spec = spec.squeeze(1)
 
-    ##
-
-    # spec = torch.matmul(mel_basis[str(fmax)+'_'+str(y.device)], spec)
+    spec = torch.matmul(mel_basis[str(fmax)+'_'+str(y.device)], spec)
     spec = spectral_normalize_torch(spec)
 
     return spec
