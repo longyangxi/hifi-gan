@@ -77,9 +77,13 @@ def mel_spectrogram(y, n_fft, num_mels, sampling_rate, hop_size, win_size, fmin,
     center=center, pad_mode='reflect', normalized=False, onesided=True, return_complex=True)
 
     print("Spectrogram shape before matmul:", spec.shape)
+    
+    spec = spec.unsqueeze(1)
+    spec = torch.matmul(mel_basis[str(fmax)+'_'+str(y.device)].unsqueeze(0), spec)
+    spec = spec.squeeze(1)
     ##
 
-    spec = torch.matmul(mel_basis[str(fmax)+'_'+str(y.device)], spec)
+    # spec = torch.matmul(mel_basis[str(fmax)+'_'+str(y.device)], spec)
     spec = spectral_normalize_torch(spec)
 
     return spec
